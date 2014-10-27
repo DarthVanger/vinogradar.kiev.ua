@@ -1,0 +1,2 @@
+.glowing-border {border:2px solid #dadada;border-radius:7px;}
+.glowing-border:focus {outline: none;border-color:#9ecaed;box-shadow:0010px#9ecaed;}

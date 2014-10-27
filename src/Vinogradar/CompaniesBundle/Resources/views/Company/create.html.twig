@@ -1,0 +1,82 @@
+{% extends 'VinogradarCompaniesBundle:Company:bootstrap.html.twig' %}
+
+{% block title %}
+{% endblock %}
+
+{% block stylesheets %}
+    {% stylesheets 
+        'bundles/vinogradarcompanies/css/company.css' filter='cssrewrite'
+    %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+    {% javascripts '@VinogradarCompaniesBundle/Resources/public/vendor/bower_components/lightbox/js/lightbox.min.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+    
+{% block body %}
+    <div class="header hidden-xs">
+        <a href="/" class="logo">
+            vinogradar.kiev.ua
+        </a>
+        <div class="controls">
+            <input id="search" class="form-control" type="search" placeholder="поиск" />
+            <div id="catalog-button" class="btn btn-default">
+                каталог
+            </div>
+            <div id="add-company" class="btn btn-default">
+                <span class="btn-plus">+</span> компания
+            </div>
+        </div>
+    </div>
+    <div class="sheet">
+        <div class="company">
+        {{ form_start(form) }}
+            <div class="company-header">
+                <div class="heading-form-small">
+                    {{ form_label(form.name) }}
+                </div>
+                {{ form_errors(form.name) }}
+                {{ form_widget(form.name, {'attr': {'placeholder': 'Название компании'} }) }}
+            </div>
+            <div class="company-body">
+                <div class="heading-form-small">
+                    {{ form_label(form.description) }}
+                </div>
+                {{ form_errors(form.description) }}
+                {{ form_widget(form.description, {'attr': {'placeholder': 'Описание'} }) }}
+
+                <div class="heading">
+                    {{ form_label(form.contact) }}
+                </div>
+                {{ form_errors(form.contact) }}
+                {{ form_widget(form.contact) }}
+
+                <div class="heading">
+                    {{ form_label(form.address) }}
+                </div>
+                {{ form_errors(form.address) }}
+                {{ form_widget(form.address) }}
+
+                <div class="heading">
+                    {{ form_label(form.website) }}
+                </div>
+                {{ form_errors(form.website) }}
+                {{ form_widget(form.website) }}
+            </div> <!-- end .company>.body -->
+
+            <div class="company-footer">
+                <div class="tags">
+                    {{ form_errors(form.tagsCsv) }}
+                    {{ form_label(form.tagsCsv) }} {{ form_widget(form.tagsCsv, {'attr': {'class': 'inline', 'placeholder': 'кафе, рестораны'} }) }}
+                </div>
+            </div>
+
+
+        {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

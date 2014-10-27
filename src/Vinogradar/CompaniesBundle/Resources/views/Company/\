@@ -1,0 +1,73 @@
+{% extends 'VinogradarCompaniesBundle:Company:bootstrap.html.twig' %}
+
+{% block title %}
+    {{company.name}}
+{% endblock %}
+
+{% block stylesheets %}
+    {% stylesheets 
+        'bundles/vinogradarcompanies/css/company.css' filter='cssrewrite'
+    %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+    {% javascripts '@VinogradarCompaniesBundle/Resources/public/vendor/bower_components/lightbox/js/lightbox.min.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+    
+{% block body %}
+    <div class="header hidden-xs">
+        <a href="/" class="logo">
+            vinogradar.kiev.ua
+        </a>
+        <div class="controls">
+            <input id="search" class="form-control" type="search" placeholder="поиск" />
+            <div id="catalog-button" class="btn btn-default">
+                каталог
+            </div>
+            <a href="{{ path('vinogradar_companies_create_company') }}" id="add-company" class="btn btn-default">
+                <span class="btn-plus">+</span> компания
+            </a>
+        </div>
+    </div>
+    <div class="sheet">
+        <div class="company">
+            <div class="name">
+                {{company.name}}
+                <div class="date">
+                    10.05.2014
+                </div>
+            </div>
+            <div class="description">
+                {{ company.description }}
+            </div>
+            <div class="line"></div>
+            <div class="heading">
+                Контакты
+            </div>
+            <div class="contact">
+                {{ company.contact }}
+            </div>
+            <div class="heading">
+                Адрес
+            </div>
+            <div class="address">
+                {{ company.address }}
+            </div>
+            {% if company.website %}
+                <div class="heading">
+                    Веб-сайт
+                </div>
+                <div class="website">
+                    {{ company.website }}
+                </div>
+            {% endif %}
+            <div class="views">
+                {{ company.viewsNumber }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

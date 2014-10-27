@@ -1,0 +1,6 @@
+vinogradar_companies_show_company:
+    path:     /company/show/{companyName}
+    defaults: { _controller: VinogradarCompaniesBundle:Company:show }
+vinogradar_companies_create_company:
+    path:     /company/create
+    defaults: { _controller: VinogradarCompaniesBundle:Company:create}
