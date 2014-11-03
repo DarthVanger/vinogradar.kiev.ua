@@ -69,10 +69,15 @@
             </div> <!-- end .company>.body -->
 
             <div class="company-footer">
-                <div class="tags">
-                    {{ form_errors(form.tagsCsv) }}
-                    {{ form_label(form.tagsCsv) }} {{ form_widget(form.tagsCsv, {'attr': {'class': 'inline', 'placeholder': 'кафе, рестораны'} }) }}
+                <div class="heading">
+                    {{ form_label(form.tags) }}
                 </div>
+                <ul class="tags">
+                    {# iterate over each existing tag and render its only field: name #}
+                    {% for tag in form.tags %}
+                        <li>{{ form_row(tag.name) }}</li>
+                    {% endfor %}
+                </ul>
             </div>
 
 

@@ -5,6 +5,8 @@ namespace Vinogradar\CompaniesBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
+use Vinogradar\CompaniesBundle\Entity\Company;
+use Vinogradar\CompaniesBundle\Entity\Tag;
 use Vinogradar\CompaniesBundle\Form\Type\CompanyType;
 use Vinogradar\CompaniesBundle\Form\Type\CategoryType;
 
@@ -25,22 +27,30 @@ class CompanyController extends Controller
     }
 
     public function createAction(Request $request) {
-        $form = $this->createForm(new CompanyType());
+        $tags = $this->getDoctrine()
+            ->getRepository('VinogradarCompaniesBundle:Tag')
+            ->findAll();
+
+        $company = new Company();
+        foreach ($tags as $tag) {
+            $company->addTag($tag);
+        }
+
+        $form = $this->createForm(new CompanyType(), $company);
 
         //\Doctrine\Common\Util\Debug::dump($request->request);
-        $companyFormParams = $request->request->get('vinogradar_companiesbundle_company');
-        if (isset($companyFormParams['tagsCsv'])) {
-           echo "tagsCsv: $companyFormParams[tagsCsv]<br />";
-           $tags = $this->createTagsFromCsv($companyFormParams['tagsCsv']);
+        //$companyFormParams = $request->request->get('vinogradar_companiesbundle_company');
+        //if (isset($companyFormParams['tagsCsv'])) {
+         //  echo "tagsCsv: $companyFormParams[tagsCsv]<br />";
+          // $tags = $this->createTagsFromCsv($companyFormParams['tagsCsv']);
 
            //$request->request->remove('vinogradar_companiesbundle_company[tagsCsv]'); 
-        }
+       // }
 
         $form->handleRequest($request);
 
         if ($form->isValid()) {
             $formData = $form->getData();
-            unset($formData['tagsCsv']);
             $company = $formData;
             $company->setLastUpdateDate(new \DateTime());
             $em = $this->getDoctrine()->getManager();

@@ -249,29 +249,6 @@ class Company
     }
 
     /**
-     * Set category
-     *
-     * @param \Vinogradar\CompaniesBundle\Entity\Category $category
-     * @return Company
-     */
-    public function setCategory(\Vinogradar\CompaniesBundle\Entity\Category $category = null)
-    {
-        $this->category = $category;
-
-        return $this;
-    }
-
-    /**
-     * Get category
-     *
-     * @return \Vinogradar\CompaniesBundle\Entity\Category 
-     */
-    public function getCategory()
-    {
-        return $this->category;
-    }
-
-    /**
      * Constructor
      */
     public function __construct()

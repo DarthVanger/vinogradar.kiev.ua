@@ -24,7 +24,7 @@ class CompanyType extends AbstractType
             ->add('website', 'text', array('label' => 'Веб-сайт (не обязательно)', 'required' => false))
             //->add('lastUpdateDate')
             //->add('viewsNumber')
-            ->add('tagsCsv', 'text', array('label' => 'Теги (рубрики):'))
+            ->add('tags', 'collection', array('type' => new TagType()))
             ->add('save', 'submit', array('label' => 'Сохранить'));
         ;
     }
