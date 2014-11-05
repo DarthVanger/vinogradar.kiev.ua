@@ -1,4 +1,6 @@
 services:
+    cache:
+        class: Doctrine\Common\Cache\XcacheCache
 #    vinogradar_companies.example:
 #        class: Vinogradar\CompaniesBundle\Example
 #        arguments: [@service_id, "plain_value", %parameter%]

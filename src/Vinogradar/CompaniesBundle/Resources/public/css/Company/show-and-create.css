@@ -1,47 +1,6 @@
-@import url('general.css');
+@import url('../general.css');
+@import url('../layout/minimalistic.css');
 
-
-.sheet {
-    color: #505050;
-    padding: 0 2em 2em 2em;
-    margin: 30px auto 0 auto;
-    //box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
-    border-bottom: none;
-    max-width: 800px;
-    border-radius: 5px;
-}
-.header {
-    padding: 10px;
-    background-color: #f8f8f8;
-}
-    .header .logo {
-        display: inline-block;
-        color: #676767; 
-        font-size: 24px;
-        padding: 0px;
-        font-weight: bold;
-        /*
-            background-image: url('../images/vineLogo.jpg');
-            background-size: auto 100%;
-        */
-    }
-        .header .logo:hover {
-            text-decoration: none;
-        }
-    .header .controls {
-        display: inline-block;
-        float: right;
-    }
-    .header #add-company {
-        display: inline-block;
-        vertical-align: middle;
-    }
-    .header #search {
-        width: 70px;
-        height: auto;
-        display: inline-block;
-        vertical-align: middle;
-    }
 .btn-plus {
     display: inline-block;
     font-weight: bold;
@@ -87,6 +46,11 @@ input#vinogradar_companiesbundle_company_name {
     margin: 0.5em 0;
     color: #707070;
 }
+.company .heading-2 {
+    font-size: 1.1em;
+    margin: 0.3em 0;
+    color: #707070;
+}
 .company .heading-form-small label {
     color: #a0a0a0;
     margin: 0.1em 0;
@@ -118,6 +82,8 @@ textarea#vinogradar_companiesbundle_company_contact {
     padding: 1em 0;
 }
 .company .tags {
+}
+.company .tags a {
 }
 .company .views {
     float: right;

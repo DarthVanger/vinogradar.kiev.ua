@@ -40,7 +40,7 @@ class Company
      *
      * @ORM\Column(name="name_for_url", type="string", length=255)
      */
-    private $nameForUrl;
+    private $name_for_url;
 
     /**
      * @var string
@@ -304,28 +304,5 @@ class Company
     public function updateDate()
     {
         $this->lastUpdateDate = new \DateTime();
-    }
-
-    /**
-     * Set name_for_url
-     *
-     * @param string $nameForUrl
-     * @return Company
-     */
-    public function setNameForUrl($nameForUrl)
-    {
-        $this->nameForUrl = $nameForUrl;
-
-        return $this;
-    }
-
-    /**
-     * Get name_for_url
-     *
-     * @return string 
-     */
-    public function getNameForUrl()
-    {
-        return $this->nameForUrl;
     }
 }

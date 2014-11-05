@@ -18,13 +18,21 @@ class CompanyType extends AbstractType
     {
         $builder
             ->add('name', 'text', array('label' => 'Название компании'))
+            ->add('name_for_url', 'text', array(
+                'label' => 'Название компании для ссылки (английскими, вместо пробелов ставьте дефисы)')
+            )
             ->add('description', 'textarea', array('label' => 'Описание'))
             ->add('contact', 'textarea', array('label' => 'Контакты'))
             ->add('address', 'text', array('label' => 'Адрес'))
             ->add('website', 'text', array('label' => 'Веб-сайт (не обязательно)', 'required' => false))
             //->add('lastUpdateDate')
             //->add('viewsNumber')
-            ->add('tags', 'collection', array('type' => new TagType()))
+            ->add('tags', 'collection', array(
+                'type' => new TagType(),
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+            ))
             ->add('save', 'submit', array('label' => 'Сохранить'));
         ;
     }

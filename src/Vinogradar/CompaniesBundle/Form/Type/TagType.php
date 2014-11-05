@@ -16,7 +16,7 @@ class TagType extends AbstractType
     {
         $builder
             ->add('name')
-            //->add('companies')
+            ->add('nameForUrl', 'hidden')
         ;
     }
     

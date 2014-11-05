@@ -1,0 +1,9 @@
+.page-content-container {
+    color: #505050;
+    padding: 0 2em 2em 2em;
+    margin: 30px auto 0 auto;
+    //box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+    border-bottom: none;
+    max-width: 800px;
+    border-radius: 5px;
+}

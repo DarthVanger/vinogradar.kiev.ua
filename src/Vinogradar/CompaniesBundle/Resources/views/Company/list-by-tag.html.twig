@@ -1,0 +1,42 @@
+{% extends 'VinogradarCompaniesBundle:Company:bootstrap.html.twig' %}
+
+{% block title %}
+    Виноградарь: каталог компаний
+{% endblock %}
+
+{% block stylesheets %}
+    {% stylesheets 
+        'bundles/vinogradarcompanies/css/Company/list.css' filter='cssrewrite'
+    %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+    {% javascripts '@VinogradarCompaniesBundle/Resources/public/vendor/bower_components/lightbox/js/lightbox.min.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+    
+{% block body %}
+    {% include "VinogradarCompaniesBundle:header:light.html.twig" %}
+    <div class="page-content-container">
+        <div>
+            <a href="{{ path('vinogradar_companies_list') }}">
+                показать весь каталог
+            </a>
+        </div>
+        <div class="heading">
+            {{ tag.name }}
+        </div>
+        <div class="companies">
+            {% for company in tag.companies %}
+                <div>
+                    <a href="{{ path('vinogradar_companies_show_company', {'companyNameForUrl': company.nameForUrl}) }}">
+                        {{ company.name }}
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

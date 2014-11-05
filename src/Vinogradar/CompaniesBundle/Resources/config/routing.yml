@@ -1,6 +1,16 @@
 vinogradar_companies_show_company:
-    path:     /company/show/{companyName}
+    path:     /company/show/{companyNameForUrl}
     defaults: { _controller: VinogradarCompaniesBundle:Company:show }
 vinogradar_companies_create_company:
     path:     /company/create
     defaults: { _controller: VinogradarCompaniesBundle:Company:create}
+vinogradar_companies_list:
+    path:     /company/list
+    defaults: { _controller: VinogradarCompaniesBundle:Company:list}
+vinogradar_companies_index:
+    path:     /
+    defaults: { _controller: VinogradarCompaniesBundle:Company:list}
+vinogradar_companies_list_by_tag:
+    path:     /company/list/{tagNameForUrl}
+    defaults: { _controller: VinogradarCompaniesBundle:Company:listByTag}
+
