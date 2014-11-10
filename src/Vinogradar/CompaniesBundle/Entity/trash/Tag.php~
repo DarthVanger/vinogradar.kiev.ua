@@ -13,7 +13,12 @@ use Doctrine\ORM\Mapping as ORM;
 class Tag
 {
     /**
-     * @ORM\ManyToMany(targetEntity="Company", mappedBy="tags")
+     * Companies count for the tag
+     */
+    private $companiesCount;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Company", mappedBy="tags", fetch="EAGER")
      */
     private $companies;
 
@@ -33,6 +38,35 @@ class Tag
      */
     private $name;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name_for_url", type="string", length=60)
+     */
+    private $nameForUrl;
+
+    /**
+     * Set companiesCount
+     *
+     * @param int $companiesCount
+     * @return Tag
+     */
+    public function setCompaniesCount($companiesCount)
+    {
+        $this->companiesCount = $companiesCount;
+
+        return $this;
+    }
+
+    /**
+     * Get companiesCount
+     *
+     * @return int
+     */
+    public function getCompaniesCount()
+    {
+        return $this->companiesCount;
+    }
 
     /**
      * Get id
@@ -75,24 +109,26 @@ class Tag
     }
 
     /**
-     * Add companies
+     * Add company
      *
-     * @param \Vinogradar\CompaniesBundle\Entity\Company $companies
+     * @param \Vinogradar\CompaniesBundle\Entity\Company $company
      * @return Tag
      */
-    public function addCompany(\Vinogradar\CompaniesBundle\Entity\Company $companies)
+    public function addCompany(\Vinogradar\CompaniesBundle\Entity\Company $company)
     {
-        $this->companies[] = $companies;
+        if (!$this->companies->contains($company)) {
+            $this->companies->add($company);
+        }
 
         return $this;
     }
 
     /**
-     * Remove companies
+     * Remove company
      *
-     * @param \Vinogradar\CompaniesBundle\Entity\Company $companies
+     * @param \Vinogradar\CompaniesBundle\Entity\Company $company
      */
-    public function removeCompany(\Vinogradar\CompaniesBundle\Entity\Company $companies)
+    public function removeCompany(\Vinogradar\CompaniesBundle\Entity\Company $company)
     {
         $this->companies->removeElement($companies);
     }
@@ -105,5 +141,28 @@ class Tag
     public function getCompanies()
     {
         return $this->companies;
+    }
+
+    /**
+     * Set nameForUrl
+     *
+     * @param string $nameForUrl
+     * @return Tag
+     */
+    public function setNameForUrl($nameForUrl)
+    {
+        $this->nameForUrl = $nameForUrl;
+
+        return $this;
+    }
+
+    /**
+     * Get nameForUrl
+     *
+     * @return string 
+     */
+    public function getNameForUrl()
+    {
+        return $this->nameForUrl;
     }
 }

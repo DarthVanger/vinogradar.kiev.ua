@@ -328,4 +328,17 @@ class Company
     {
         return $this->nameForUrl;
     }
+
+    /**
+     * Get tags
+     *
+     * @param \Doctrine\Common\Collections\Collection $tags
+     * @return Company
+     */
+    public function setTags($tags)
+    {
+        $this->tags = $tags;
+
+        return $this;
+    }
 }

@@ -9,11 +9,12 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table()
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks()
  */
 class Company
 {
     /**
-     * @ORM\ManyToMany(targetEntity="Tag", inversedBy="companies")
+     * @ORM\ManyToMany(targetEntity="Tag", inversedBy="companies", cascade={"persist"})
      * @ORM\JoinTable(name="companies_tags_mapping")
      */
     private $tags;
@@ -33,6 +34,13 @@ class Company
      * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name_for_url", type="string", length=255)
+     */
+    private $name_for_url;
 
     /**
      * @var string
@@ -249,29 +257,6 @@ class Company
     }
 
     /**
-     * Set category
-     *
-     * @param \Vinogradar\CompaniesBundle\Entity\Category $category
-     * @return Company
-     */
-    public function setCategory(\Vinogradar\CompaniesBundle\Entity\Category $category = null)
-    {
-        $this->category = $category;
-
-        return $this;
-    }
-
-    /**
-     * Get category
-     *
-     * @return \Vinogradar\CompaniesBundle\Entity\Category 
-     */
-    public function getCategory()
-    {
-        return $this->category;
-    }
-
-    /**
      * Constructor
      */
     public function __construct()
@@ -311,5 +296,13 @@ class Company
     public function getTags()
     {
         return $this->tags;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function updateDate()
+    {
+        $this->lastUpdateDate = new \DateTime();
     }
 }

@@ -38,33 +38,23 @@ class CompanyController extends Controller
             $formData = $form->getData();
             $company = $formData;
 
+            $tagProvider = $this->get('vinogradar_companies.tag_provider');
+            $tags = $company->getTags();
+            $tagProvider->replaceDuplicatesWithExistingTags($tags);
+            $tagProvider->generateNamesForUrl($tags);
+
             $em = $this->getDoctrine()->getManager();
-
-            // check if user entered an existing tag
-            $tags = $company->getTags();
-            $tagRepository = $em->getRepository('VinogradarCompaniesBundle:Tag');
-            foreach ($tags as $tag) {
-                $duplicateTag = $tagRepository->findOneBy(array('name' => $tag->getName()));
-                if ($duplicateTag) {
-                    $company->removeTag($tag);
-                    $company->addTag($duplicateTag);
-                }
-            }
-
-            // generate nameForUrl from name for tags
-            $tags = $company->getTags();
-            foreach ($tags as $tag) {
-                $tag->setNameForUrl($this->generateTagNameForUrl($tag->getName()));
-            }
-
             $em->persist($company);
             $em->flush();
 
+            //TODO: refactor this in service
             $dateTime = new \DateTime();
             $this->get('cache')
                 ->save('companiesDbHash', sha1($dateTime->getTimestamp()));
 
-            return $this->redirect($this->generateUrl('vinogradar_companies_show_company', array('companyNameForUrl' => $company->getNameForUrl())));
+            return $this->redirect(
+                $this->generateUrl('vinogradar_companies_show_company',
+                array('companyNameForUrl' => $company->getNameForUrl())));
         }
 
         return $this->render('VinogradarCompaniesBundle:Company:create.html.twig', array(
@@ -136,79 +126,4 @@ class CompanyController extends Controller
         return $tags;
     }
 
-    private function generateTagNameForUrl($str) {
-        // переводим в транслит
-
-        $str = $this->rus2translit($str);
-
-        // в нижний регистр
-
-        $str = strtolower($str);
-
-        // заменям все ненужное нам на "-"
-
-        $str = preg_replace('~[^-a-z0-9_]+~u', '-', $str);
-
-        // удаляем начальные и конечные '-'
-
-        $str = trim($str, "-");
-
-        return $str;
-    }
-
-    private function rus2translit($string) {
-
-        $converter = array(
-
-            'а' => 'a',   'б' => 'b',   'в' => 'v',
-
-            'г' => 'g',   'д' => 'd',   'е' => 'e',
-
-            'ё' => 'e',   'ж' => 'zh',  'з' => 'z',
-
-            'и' => 'i',   'й' => 'y',   'к' => 'k',
-
-            'л' => 'l',   'м' => 'm',   'н' => 'n',
-
-            'о' => 'o',   'п' => 'p',   'р' => 'r',
-
-            'с' => 's',   'т' => 't',   'у' => 'u',
-
-            'ф' => 'f',   'х' => 'h',   'ц' => 'c',
-
-            'ч' => 'ch',  'ш' => 'sh',  'щ' => 'sch',
-
-            'ь' => '\'',  'ы' => 'y',   'ъ' => '\'',
-
-            'э' => 'e',   'ю' => 'yu',  'я' => 'ya',
-
-            
-
-            'А' => 'A',   'Б' => 'B',   'В' => 'V',
-
-            'Г' => 'G',   'Д' => 'D',   'Е' => 'E',
-
-            'Ё' => 'E',   'Ж' => 'Zh',  'З' => 'Z',
-
-            'И' => 'I',   'Й' => 'Y',   'К' => 'K',
-
-            'Л' => 'L',   'М' => 'M',   'Н' => 'N',
-
-            'О' => 'O',   'П' => 'P',   'Р' => 'R',
-
-            'С' => 'S',   'Т' => 'T',   'У' => 'U',
-
-            'Ф' => 'F',   'Х' => 'H',   'Ц' => 'C',
-
-            'Ч' => 'Ch',  'Ш' => 'Sh',  'Щ' => 'Sch',
-
-            'Ь' => '\'',  'Ы' => 'Y',   'Ъ' => '\'',
-
-            'Э' => 'E',   'Ю' => 'Yu',  'Я' => 'Ya',
-
-        );
-
-        return strtr($string, $converter);
-
-    }
 }
