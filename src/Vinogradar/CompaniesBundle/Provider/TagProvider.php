@@ -3,15 +3,21 @@
 namespace Vinogradar\CompaniesBundle\Provider;
 
 use Doctrine\ORM\EntityManager;
+use Vinogradar\UtilsBundle\Transliterator;
+use Doctrine\Common\Cache\XcacheCache;
 
 class TagProvider
 {
 
     protected $entityManager;
+    protected $transliterator;
+    protected $cacheDriver;
 
-    public function __construct(EntityManager $entityManager)
+    public function __construct(EntityManager $entityManager, XcacheCache $cacheDriver, Transliterator $transliterator)
     {
         $this->entityManager = $entityManager;
+        $this->transliterator= $transliterator;
+        $this->cacheDriver = $cacheDriver;
     }
 
     public function replaceDuplicatesWithExistingTags(&$tags) {
@@ -32,10 +38,58 @@ class TagProvider
         }
     }
 
+    public function fetchTagsFromDb() {
+
+        $tagsManager = $this->entityManager;
+
+        // select tags with companies count
+        $query = $tagsManager->createQuery(
+            'SELECT tag, COUNT(companies.id) as companies_count
+            FROM VinogradarCompaniesBundle:Tag tag
+            JOIN tag.companies companies
+            GROUP BY
+                tag.id
+            ORDER BY
+                companies_count DESC'
+        );
+
+        $queryResult = $query->getResult();
+
+        // fetch the query
+        $tags = array();
+        foreach ($queryResult as $row) {
+            $tag = $row[0];
+            $tag->setCompaniesCount($row['companies_count']);
+            $tags[] = $tag;
+        }
+
+        $this->cacheDriver->save('tags', $tags);
+        $dateTime = new \DateTime();
+        $this->cacheDriver->save('cachedCompaniesDbHash', $cacheDriver->fetch('companiesDbHash'));
+
+        return $tags;
+    }
+
+    public function getAllTags() {
+        if ($this->cacheDriver->fetch('cachedCompaniesDbHash') !==  $this->cacheDriver->fetch('companiesDbHash')) {
+            // db has changed since last caching
+            $tags = $this->fetchTagsFromDb();
+        } else {
+            // cached tags are up to date
+            $tags = $this->cacheDriver->fetch('tags');
+            if (!$tags) {
+                // cache may be empty, for example if server restarted
+                $tags = $this->fetchTagsFromDb();
+            }
+        }
+
+        return $tags;
+    }
+
     private function generateTagNameForUrl($str) {
         // переводим в транслит
 
-        $str = $this->rus2translit($str);
+        $str = $this->transliterator->translitRussian($str);
 
         // в нижний регистр
 
@@ -50,61 +104,5 @@ class TagProvider
         $str = trim($str, "-");
 
         return $str;
-    }
-
-    private function rus2translit($string) {
-
-        $converter = array(
-
-            'а' => 'a',   'б' => 'b',   'в' => 'v',
-
-            'г' => 'g',   'д' => 'd',   'е' => 'e',
-
-            'ё' => 'e',   'ж' => 'zh',  'з' => 'z',
-
-            'и' => 'i',   'й' => 'y',   'к' => 'k',
-
-            'л' => 'l',   'м' => 'm',   'н' => 'n',
-
-            'о' => 'o',   'п' => 'p',   'р' => 'r',
-
-            'с' => 's',   'т' => 't',   'у' => 'u',
-
-            'ф' => 'f',   'х' => 'h',   'ц' => 'c',
-
-            'ч' => 'ch',  'ш' => 'sh',  'щ' => 'sch',
-
-            'ь' => '\'',  'ы' => 'y',   'ъ' => '\'',
-
-            'э' => 'e',   'ю' => 'yu',  'я' => 'ya',
-
-            
-
-            'А' => 'A',   'Б' => 'B',   'В' => 'V',
-
-            'Г' => 'G',   'Д' => 'D',   'Е' => 'E',
-
-            'Ё' => 'E',   'Ж' => 'Zh',  'З' => 'Z',
-
-            'И' => 'I',   'Й' => 'Y',   'К' => 'K',
-
-            'Л' => 'L',   'М' => 'M',   'Н' => 'N',
-
-            'О' => 'O',   'П' => 'P',   'Р' => 'R',
-
-            'С' => 'S',   'Т' => 'T',   'У' => 'U',
-
-            'Ф' => 'F',   'Х' => 'H',   'Ц' => 'C',
-
-            'Ч' => 'Ch',  'Ш' => 'Sh',  'Щ' => 'Sch',
-
-            'Ь' => '\'',  'Ы' => 'Y',   'Ъ' => '\'',
-
-            'Э' => 'E',   'Ю' => 'Yu',  'Я' => 'Ya',
-
-        );
-
-        return strtr($string, $converter);
-
     }
 }

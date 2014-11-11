@@ -63,16 +63,8 @@ class CompanyController extends Controller
     }
 
     public function listAction() {
-        $cacheDriver = $this->get('cache'); 
-
-        if ($cacheDriver->fetch('cachedCompaniesDbHash') !==  $cacheDriver->fetch('companiesDbHash')) {
-            // db has changed since last caching
-            $tags = $this->fetchTagsFromDb();
-        } else {
-            // cached tags are up to date
-            $tags = $cacheDriver->fetch('tags');
-        }
-
+        $tagProvider = $this->get('vinogradar_companies.tag_provider');
+        $tags = $tagProvider->getAllTags();
         $viewData = array(
             'tags' => $tags
         );
@@ -92,38 +84,5 @@ class CompanyController extends Controller
         return $this->render('VinogradarCompaniesBundle:Company:list-by-tag.html.twig', $viewData);
     }
 
-    private function fetchTagsFromDb() {
-
-        $tagsManager = $this->getDoctrine()
-            ->getManager();
-
-        // select tags with companies count
-        $query = $tagsManager->createQuery(
-            'SELECT tag, COUNT(companies.id) as companies_count
-            FROM VinogradarCompaniesBundle:Tag tag
-            JOIN tag.companies companies
-            GROUP BY
-                tag.id
-            ORDER BY
-                companies_count DESC'
-        );
-
-        $queryResult = $query->getResult();
-
-        // fetch the query
-        $tags = array();
-        foreach ($queryResult as $row) {
-            $tag = $row[0];
-            $tag->setCompaniesCount($row['companies_count']);
-            $tags[] = $tag;
-        }
-
-        $cacheDriver = $this->get('cache'); 
-        $cacheDriver->save('tags', $tags);
-        $dateTime = new \DateTime();
-        $cacheDriver->save('cachedCompaniesDbHash', $cacheDriver->fetch('companiesDbHash'));
-
-        return $tags;
-    }
 
 }

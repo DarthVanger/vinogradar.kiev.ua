@@ -1,3 +1,7 @@
+vinogradar_utils:
+    resource: "@VinogradarUtilsBundle/Resources/config/routing.yml"
+    prefix:   /
+
 vinogradar_companies:
     resource: "@VinogradarCompaniesBundle/Resources/config/routing.yml"
     prefix:   /

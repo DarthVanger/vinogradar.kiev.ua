@@ -1,0 +1,9 @@
+parameters:
+    vinogradar.utils.transliterator.class: Vinogradar\UtilsBundle\Transliterator
+services:
+    cache:
+        class: Doctrine\Common\Cache\XcacheCache
+    vinogradar.utils.transliterator:
+        class: "%vinogradar.utils.transliterator.class%" 
+
+

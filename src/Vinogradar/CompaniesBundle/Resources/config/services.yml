@@ -1,9 +1,7 @@
 services:
-    cache:
-        class: Doctrine\Common\Cache\XcacheCache
     vinogradar_companies.tag_provider:
         class: Vinogradar\CompaniesBundle\Provider\TagProvider
-        arguments: [ @doctrine.orm.entity_manager ]
+        arguments: [ @doctrine.orm.entity_manager, @cache, @vinogradar.utils.transliterator ]
 
 #    vinogradar_companies.example:
 #        class: Vinogradar\CompaniesBundle\Example
