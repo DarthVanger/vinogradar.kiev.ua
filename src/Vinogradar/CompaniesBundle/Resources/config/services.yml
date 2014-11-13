@@ -1,7 +1,11 @@
 services:
     vinogradar_companies.tag_provider:
         class: Vinogradar\CompaniesBundle\Provider\TagProvider
-        arguments: [ @doctrine.orm.entity_manager, @cache, @vinogradar.utils.transliterator ]
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @cache
+            - @vinogradar.utils.transliterator
+            - @vinogradar.utils.name_for_url_preparator
 
 #    vinogradar_companies.example:
 #        class: Vinogradar\CompaniesBundle\Example

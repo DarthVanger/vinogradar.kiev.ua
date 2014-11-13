@@ -1,9 +1,12 @@
 parameters:
     vinogradar.utils.transliterator.class: Vinogradar\UtilsBundle\Transliterator
+    vinogradar.utils.name_for_url_preparator.class: Vinogradar\UtilsBundle\NameForUrlPreparator
 services:
     cache:
         class: Doctrine\Common\Cache\XcacheCache
     vinogradar.utils.transliterator:
         class: "%vinogradar.utils.transliterator.class%" 
+    vinogradar.utils.name_for_url_preparator:
+        class: "%vinogradar.utils.name_for_url_preparator.class%" 
 
 

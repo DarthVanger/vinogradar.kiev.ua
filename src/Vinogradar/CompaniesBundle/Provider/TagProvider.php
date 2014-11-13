@@ -3,8 +3,9 @@
 namespace Vinogradar\CompaniesBundle\Provider;
 
 use Doctrine\ORM\EntityManager;
-use Vinogradar\UtilsBundle\Transliterator;
 use Doctrine\Common\Cache\XcacheCache;
+use Vinogradar\UtilsBundle\Transliterator;
+use Vinogradar\UtilsBundle\NameForUrlPreparator;
 
 class TagProvider
 {
@@ -12,12 +13,19 @@ class TagProvider
     protected $entityManager;
     protected $transliterator;
     protected $cacheDriver;
+    protected $nameForUrlPreparator;
 
-    public function __construct(EntityManager $entityManager, XcacheCache $cacheDriver, Transliterator $transliterator)
-    {
+
+    public function __construct(
+        EntityManager $entityManager,
+        XcacheCache $cacheDriver,
+        Transliterator $transliterator,
+        NameForUrlPreparator $nameForUrlPreparator
+    ) {
         $this->entityManager = $entityManager;
-        $this->transliterator= $transliterator;
         $this->cacheDriver = $cacheDriver;
+        $this->transliterator = $transliterator;
+        $this->nameForUrlPreparator = $nameForUrlPreparator;
     }
 
     public function replaceDuplicatesWithExistingTags(&$tags) {
@@ -34,7 +42,9 @@ class TagProvider
 
     public function generateNamesForUrl(&$tags) {
         foreach ($tags as $tag) {
-            $tag->setNameForUrl($this->generateTagNameForUrl($tag->getName()));
+            $nameForUrl = $this->transliterator->translitRussian($tag->getName());
+            $nameForUrl = $this->nameForUrlPreparator->cleanUp($nameForUrl);
+            $tag->setNameForUrl($nameForUrl);
         }
     }
 
@@ -84,25 +94,5 @@ class TagProvider
         }
 
         return $tags;
-    }
-
-    private function generateTagNameForUrl($str) {
-        // переводим в транслит
-
-        $str = $this->transliterator->translitRussian($str);
-
-        // в нижний регистр
-
-        $str = strtolower($str);
-
-        // заменям все ненужное нам на "-"
-
-        $str = preg_replace('~[^-a-z0-9_]+~u', '-', $str);
-
-        // удаляем начальные и конечные '-'
-
-        $str = trim($str, "-");
-
-        return $str;
     }
 }
