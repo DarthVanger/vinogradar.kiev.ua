@@ -3,27 +3,25 @@
 namespace Vinogradar\CompaniesBundle\Provider;
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\Common\Cache\XcacheCache;
+use Vinogradar\CompaniesBundle\Provider\DbCacheProvider;
 use Vinogradar\UtilsBundle\Transliterator;
 use Vinogradar\UtilsBundle\NameForUrlPreparator;
 
 class TagProvider
 {
-
     protected $entityManager;
     protected $transliterator;
-    protected $cacheDriver;
+    protected $dbCacheProvider;
     protected $nameForUrlPreparator;
-
 
     public function __construct(
         EntityManager $entityManager,
-        XcacheCache $cacheDriver,
+        DbCacheProvider $dbCacheProvider,
         Transliterator $transliterator,
         NameForUrlPreparator $nameForUrlPreparator
     ) {
         $this->entityManager = $entityManager;
-        $this->cacheDriver = $cacheDriver;
+        $this->dbCacheProvider = $dbCacheProvider;
         $this->transliterator = $transliterator;
         $this->nameForUrlPreparator = $nameForUrlPreparator;
     }
@@ -48,6 +46,7 @@ class TagProvider
         }
     }
 
+    // TODO: refactor this method to TagRepository
     public function fetchTagsFromDb() {
 
         $tagsManager = $this->entityManager;
@@ -73,24 +72,18 @@ class TagProvider
             $tags[] = $tag;
         }
 
-        $this->cacheDriver->save('tags', $tags);
-        $dateTime = new \DateTime();
-        $this->cacheDriver->save('cachedCompaniesDbHash', $cacheDriver->fetch('companiesDbHash'));
+        $this->dbCacheProvider->save('tags', $tags);
+        $this->dbCacheProvider->updateCacheHash('tags');
 
         return $tags;
     }
 
     public function getAllTags() {
-        if ($this->cacheDriver->fetch('cachedCompaniesDbHash') !==  $this->cacheDriver->fetch('companiesDbHash')) {
-            // db has changed since last caching
-            $tags = $this->fetchTagsFromDb();
+        if ($this->dbCacheProvider->cacheIsFresh('tags')) {
+            $tags = $this->dbCacheProvider->fetch('tags');
         } else {
-            // cached tags are up to date
-            $tags = $this->cacheDriver->fetch('tags');
-            if (!$tags) {
-                // cache may be empty, for example if server restarted
-                $tags = $this->fetchTagsFromDb();
-            }
+            // cache is not up-to-date
+            $tags = $this->fetchTagsFromDb();
         }
 
         return $tags;

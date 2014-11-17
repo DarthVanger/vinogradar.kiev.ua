@@ -21,11 +21,6 @@ class CompanyController extends Controller
         return $this->render('VinogradarCompaniesBundle:Company:show.html.twig', array('company' => $company));
     }
 
-    private function createTagsFromCsv($tagsCsv) {
-        $tagNames = preg_split('/,|,\s/', $tagsCsv);
-        var_dump($tagNames);
-    }
-
     public function createAction(Request $request) {
 
         $company = new Company();
@@ -47,10 +42,10 @@ class CompanyController extends Controller
             $em->persist($company);
             $em->flush();
 
-            //TODO: refactor this in service
-            $dateTime = new \DateTime();
-            $this->get('cache')
-                ->save('companiesDbHash', sha1($dateTime->getTimestamp()));
+            $dbCacheProvider = $this->get('vinogradar_companies.db_cache_provider');
+
+            // the database's checksum has changed
+            $dbCacheProvider->updateDbHash('company');
 
             return $this->redirect(
                 $this->generateUrl('vinogradar_companies_show_company',
@@ -63,11 +58,13 @@ class CompanyController extends Controller
     }
 
     public function listAction() {
+
         $tagProvider = $this->get('vinogradar_companies.tag_provider');
         $tags = $tagProvider->getAllTags();
         $viewData = array(
             'tags' => $tags
         );
+
 
         return $this->render('VinogradarCompaniesBundle:Company:list.html.twig', $viewData);
     }

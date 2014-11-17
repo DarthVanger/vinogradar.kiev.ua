@@ -1,12 +1,14 @@
 services:
+    vinogradar_companies.db_cache_provider:
+        class: Vinogradar\CompaniesBundle\Provider\DbCacheProvider
+        arguments: [@cache]
     vinogradar_companies.tag_provider:
         class: Vinogradar\CompaniesBundle\Provider\TagProvider
         arguments:
             - @doctrine.orm.entity_manager
-            - @cache
+            - @vinogradar_companies.db_cache_provider
             - @vinogradar.utils.transliterator
             - @vinogradar.utils.name_for_url_preparator
-
 #    vinogradar_companies.example:
 #        class: Vinogradar\CompaniesBundle\Example
 #        arguments: [@service_id, "plain_value", %parameter%]
