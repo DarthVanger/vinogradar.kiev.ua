@@ -5,6 +5,10 @@ namespace Vinogradar\CompaniesBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+
 use Vinogradar\CompaniesBundle\Entity\Company;
 use Vinogradar\CompaniesBundle\Entity\Tag;
 use Vinogradar\CompaniesBundle\Form\Type\CompanyType;
@@ -22,12 +26,15 @@ class CompanyController extends Controller
     }
 
     public function createAction(Request $request) {
-
         $company = new Company();
-
         $form = $this->createForm(new CompanyType(), $company);
-
         $form->handleRequest($request);
+
+        $tagProvider = $this->get('vinogradar_companies.tag_provider');
+        $tagNamesForHint = $tagProvider->getAllTagNames();
+        //$serializer = $this->container->get('serializer');
+        //$tagsNamesForHintJson = $serializer->serialize($tagsForHint, 'json');
+        $tagNamesForHintJson = json_encode($tagNamesForHint);
 
         if ($form->isValid()) {
             $formData = $form->getData();
@@ -53,7 +60,8 @@ class CompanyController extends Controller
         }
 
         return $this->render('VinogradarCompaniesBundle:Company:create.html.twig', array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'tagsForHintJson' => $tagNamesForHintJson
         ));
     }
 

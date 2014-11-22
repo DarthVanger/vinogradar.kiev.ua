@@ -64,8 +64,10 @@
                         <li>{{ form_row(tag.name) }}</li>
                     {% endfor %}
                 </ul>
+                <input id="tag-input" type="text" />
+                <h2>matched tags</h2>
+                <div id="matched-tags"></div>
             </div>
-
 
         {{ form_end(form) }}
         </div>
@@ -149,5 +151,35 @@
         $tagFormLi.remove();
     });
 }
+
+    /**
+     * script for tag hints
+     */
+
+     //var tags = JSON.parse('{{ tagsForHintJson }}');
+     tags = JSON.parse('{{ tagsForHintJson | raw}}');
+     $('#tag-input').keyup(function() {
+         tagBeginning = this.value;
+
+         var matchedTags = [];
+         if (tagBeginning.length > 1) {
+             for (var i=0; i<tags.length; i++) {
+                 if (tags[i].match(tagBeginning)) {
+                     matchedTags.push(tags[i]);
+                 }
+             }
+         }
+
+        matchedTagsList = document.createElement('ul');
+        for (var i=0; i<matchedTags.length; i++) {
+            var li = document.createElement('li');
+            li.innerHTML = matchedTags[i];
+            matchedTagsList.appendChild(li);
+         }
+
+        console.log(matchedTagsList);
+        $('#matched-tags').html(matchedTagsList);
+     });
+
     </script>
 {% endblock %}

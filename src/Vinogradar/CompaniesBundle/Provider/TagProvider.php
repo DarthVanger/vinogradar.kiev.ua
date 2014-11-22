@@ -78,6 +78,16 @@ class TagProvider
         return $tags;
     }
 
+    public function getAllTagNames() {
+        $tags = $this->getAllTags();
+        $tagNames = array();
+        foreach ($tags as $tag) {
+           $tagNames[] = $tag->getName(); 
+        }
+
+        return $tagNames;
+    }
+
     public function getAllTags() {
         if ($this->dbCacheProvider->cacheIsFresh('tags')) {
             $tags = $this->dbCacheProvider->fetch('tags');
