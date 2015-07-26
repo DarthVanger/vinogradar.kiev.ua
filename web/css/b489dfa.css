@@ -1,0 +1,6 @@
+@import url('../bundles/vinogradarcompanies/css/general.css');
+@import url('../bundles/vinogradarcompanies/css/layout/minimalistic.css');
+
+.tags a {
+    display: block;
+}

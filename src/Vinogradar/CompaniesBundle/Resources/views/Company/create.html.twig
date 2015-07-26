@@ -6,9 +6,11 @@
 {% block stylesheets %}
     {% stylesheets 
         'bundles/vinogradarcompanies/css/Company/show-and-create.css' filter='cssrewrite'
+        '@VinogradarCompaniesBundle/Resources/public/vendor/node_modules/select2/dist/css/select2.min.css'
     %}
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
+
 {% endblock %}
     
 {% block body %}
@@ -58,15 +60,23 @@
                 <div class="heading">
                     {{ form_label(form.tags) }}
                 </div>
-                <ul class="tags" data-prototype="{{ form_widget(form.tags.vars.prototype)|e }}">
+                {# this is <select> for select2 plugin. Tags selected here will be created as hidden inputs before submit #}
+                <div id="tag-input-container">
+                    <select id="tag-input" multiple="multiple" style="width: 100%">
+                    {% for tag in tagNamesForHint %}
+                        <option>{{ tag }}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+
+                {# this is a hidden list with tag inputs for symfony #}
+                {# it is filled from "select2" plugin's select before form submit #}
+                <ul class="tags hidden" id="hidden-tag-inputs-for-symfony"  data-prototype="{{ form_widget(form.tags.vars.prototype)|e }}">
                     {# iterate over each existing tag and render its only field: name #}
                     {% for tag in form.tags %}
                         <li>{{ form_row(tag.name) }}</li>
                     {% endfor %}
                 </ul>
-                <input id="tag-input" type="text" />
-                <h2>matched tags</h2>
-                <div id="matched-tags"></div>
             </div>
 
         {{ form_end(form) }}
@@ -77,109 +87,124 @@
 {% endblock %}
 
 {% block javascripts %}
-    {% javascripts '@VinogradarCompaniesBundle/Resources/public/vendor/bower_components/lightbox/js/lightbox.min.js' %}
+    {% javascripts
+        '@VinogradarCompaniesBundle/Resources/public/vendor/bower_components/lightbox/js/lightbox.min.js'
+        '@VinogradarCompaniesBundle/Resources/public/vendor/node_modules/select2/dist/js/select2.min.js'
+    %}
+
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
 
     <script>
-    /**
-     * Script for adding and removing tags
-     */
 
-    var $collectionHolder;
+        /**
+         * Script for choosing tags with 'select2' plugin, and creating them as hidden inputs before submit
+         */
 
-    // setup an "add a tag" link
-    var $addTagLink = $('<a href="#" class="add_tag_link">Add a tag</a>');
-    var $newLinkLi = $('<li></li>').append($addTagLink);
+        $("#tag-input").select2({
+              tags: true,
+              //minimumInputLength: 1,
+              tokenSeparators: [',']
+        })
 
-    jQuery(document).ready(function() {
-        // Get the ul that holds the collection of tags
-        $collectionHolder = $('ul.tags');
+        $("form[name=vinogradar_companiesbundle_company]").submit(function (event) {
+            var selectedTags = $("#tag-input").select2("val");
+            //console.log('selectdd tags:');
+            //console.log(selectedTags)
+            $('#hidden-tag-inputs-for-symfony').empty();
+            $.each(selectedTags, function(index, value) {
+                //console.log('tag1 name = ' + value);
+                createHiddenInputForSymfony(value);
+            });
 
-        // add a delete link to all of the existing tag form li elements
-        $collectionHolder.find('li').each(function() {
-            addTagFormDeleteLink($(this));
+            return true;
         });
 
-        // add the "add a tag" anchor and li to the tags ul
-        $collectionHolder.append($newLinkLi);
+        function createHiddenInputForSymfony(tagName) {
+            var $tagForm = addTagForm($collectionHolder, $newLinkLi);
+            $tagForm.find('input').val(tagName);
+        }
 
-        // count the current form inputs we have (e.g. 2), use that as the new
-        // index when inserting a new item (e.g. 2)
-        $collectionHolder.data('index', $collectionHolder.find(':input').length);
+        // json encoded array of tags is avalaible here
+        // tags = JSON.parse('{{ tagsForHintJson | raw}}');
 
-        $addTagLink.on('click', function(e) {
-            // prevent the link from creating a "#" on the URL
-            e.preventDefault();
 
-            // add a new tag form (see next code block)
-            addTagForm($collectionHolder, $newLinkLi);
+        /**
+         * Script from Symfony Form Collections' documentaion, which manages adding and removing inputs for tags
+         * I use it's "addTagForm()" function, in order to create inputs for tags from "select2" plugin's data, before form submit.
+         * TODO: Delete all the other unnecessary functions like addTagFormDeleteLink
+         */
+
+        var $collectionHolder;
+
+        // setup an "add a tag" link
+        var $addTagLink = $('<a href="#" class="add_tag_link">Add a tag</a>');
+        var $newLinkLi = $('<li></li>').append($addTagLink);
+
+        jQuery(document).ready(function() {
+            // Get the ul that holds the collection of tags
+            $collectionHolder = $('ul.tags');
+
+            // add a delete link to all of the existing tag form li elements
+            $collectionHolder.find('li').each(function() {
+                addTagFormDeleteLink($(this));
+            });
+
+            // add the "add a tag" anchor and li to the tags ul
+            $collectionHolder.append($newLinkLi);
+
+            // count the current form inputs we have (e.g. 2), use that as the new
+            // index when inserting a new item (e.g. 2)
+            $collectionHolder.data('index', $collectionHolder.find(':input').length);
+
+            $addTagLink.on('click', function(e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                // add a new tag form (see next code block)
+                addTagForm($collectionHolder, $newLinkLi);
+            });
         });
-    });
 
-    function addTagForm($collectionHolder, $newLinkLi) {
-        // Get the data-prototype explained earlier
-        var prototype = $collectionHolder.data('prototype');
+        function addTagForm($collectionHolder, $newLinkLi) {
+            // Get the data-prototype explained earlier
+            var prototype = $collectionHolder.data('prototype');
 
-        // get the new index
-        var index = $collectionHolder.data('index');
+            // get the new index
+            var index = $collectionHolder.data('index');
 
-        // Replace '__name__' in the prototype's HTML to
-        // instead be a number based on how many items we have
-        var newForm = prototype.replace(/__name__/g, index);
+            // Replace '__name__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            var newForm = prototype.replace(/__name__/g, index);
+            var $newForm = $(newForm);
 
-        // increase the index with one for the next item
-        $collectionHolder.data('index', index + 1);
+            // increase the index with one for the next item
+            $collectionHolder.data('index', index + 1);
 
-        // Display the form in the page in an li, before the "Add a tag" link li
-        var $newFormLi = $('<li></li>').append(newForm);
-        $newLinkLi.before($newFormLi);
+            // Display the form in the page in an li, before the "Add a tag" link li
+            var $newFormLi = $('<li></li>').append($newForm);
+            //$newLinkLi.before($newFormLi);
+            // just append the li to the collection holder, no need for "Add a tag" link, because the form is hidden
+            $collectionHolder.append($newFormLi);
 
-        // add a delete link to the new form
-        addTagFormDeleteLink($newFormLi);
-    }
+            // add a delete link to the new form
+            addTagFormDeleteLink($newFormLi);
 
-    function addTagFormDeleteLink($tagFormLi) {
-    var $removeFormA = $('<a href="#">delete this tag</a>');
-    $tagFormLi.append($removeFormA);
+            return $newForm;
+        }
 
-    $removeFormA.on('click', function(e) {
-        // prevent the link from creating a "#" on the URL
-        e.preventDefault();
+        function addTagFormDeleteLink($tagFormLi) {
+            var $removeFormA = $('<a href="#">delete this tag</a>');
+            $tagFormLi.append($removeFormA);
 
-        // remove the li for the tag form
-        $tagFormLi.remove();
-    });
-}
+            $removeFormA.on('click', function(e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
 
-    /**
-     * script for tag hints
-     */
-
-     //var tags = JSON.parse('{{ tagsForHintJson }}');
-     tags = JSON.parse('{{ tagsForHintJson | raw}}');
-     $('#tag-input').keyup(function() {
-         tagBeginning = this.value;
-
-         var matchedTags = [];
-         if (tagBeginning.length > 1) {
-             for (var i=0; i<tags.length; i++) {
-                 if (tags[i].match(tagBeginning)) {
-                     matchedTags.push(tags[i]);
-                 }
-             }
-         }
-
-        matchedTagsList = document.createElement('ul');
-        for (var i=0; i<matchedTags.length; i++) {
-            var li = document.createElement('li');
-            li.innerHTML = matchedTags[i];
-            matchedTagsList.appendChild(li);
-         }
-
-        console.log(matchedTagsList);
-        $('#matched-tags').html(matchedTagsList);
-     });
+                // remove the li for the tag form
+                $tagFormLi.remove();
+            });
+        }
 
     </script>
 {% endblock %}

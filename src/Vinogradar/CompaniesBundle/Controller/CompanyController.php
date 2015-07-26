@@ -61,7 +61,8 @@ class CompanyController extends Controller
 
         return $this->render('VinogradarCompaniesBundle:Company:create.html.twig', array(
             'form' => $form->createView(),
-            'tagsForHintJson' => $tagNamesForHintJson
+            'tagsForHintJson' => $tagNamesForHintJson,
+            'tagNamesForHint' => $tagNamesForHint,
         ));
     }
 
