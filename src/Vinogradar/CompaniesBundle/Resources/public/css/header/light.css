@@ -1,0 +1,35 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto+Slab:400,700&subset=latin,cyrillic);
+.header {
+    padding: 10px;
+    background-color: #f8f8f8;
+    height: 55px;
+}
+    .header .logo {
+        display: inline-block;
+        color: #676767; 
+        font-size: 24px;
+        font-family: "Roboto Slab";
+        padding: 0px;
+        font-weight: bold;
+        /*
+            background-image: url('../images/vineLogo.jpg');
+            background-size: auto 100%;
+        */
+    }
+        .header .logo:hover {
+            text-decoration: none;
+        }
+    .header .controls {
+        display: inline-block;
+        float: right;
+    }
+    .header #add-company {
+        display: inline-block;
+        vertical-align: middle;
+    }
+    .header #search {
+        width: 70px;
+        height: auto;
+        display: inline-block;
+        vertical-align: middle;
+    }

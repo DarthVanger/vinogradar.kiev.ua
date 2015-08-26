@@ -1,0 +1,8 @@
+.inline-block {
+    display: inline-block;
+}
+.heading {
+    font-size: 1.3em;
+    margin: 0.5em 0;
+    color: #707070;
+}

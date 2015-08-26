@@ -1,0 +1,92 @@
+@import url('../general.css');
+@import url('../layout/minimalistic.css');
+
+.btn-plus {
+    display: inline-block;
+    font-weight: bold;
+    font-size: 2em;
+    line-height: 0.6em;
+    vertical-align: middle;
+    margin: 0 0.3em 0 0;
+    padding: 0;
+}
+.company {
+}
+.company input[type="text"], .company textarea {
+    border:1px solid #dadada;border-radius:7px;
+    padding: 0.2em 0.5em;
+}
+.company input.inline {
+    margin-left: 0.5em;
+}
+.company input:focus, .company textarea:focus {
+    outline: none;border-color:#9ecaed;box-shadow:0010px#9ecaed;
+}
+.company .name, input#vinogradar_companiesbundle_company_name {
+    width: 100%;
+    font-size: 3em;
+    color: #707070;
+    margin: 20px 0;
+    text-align: center;
+}
+input#vinogradar_companiesbundle_company_name {
+    margin: 0 0 20px 0;
+}
+.company .name {
+    position: relative;
+}
+.company .date {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 0.3em;
+}
+.company .heading {
+    font-size: 1.3em;
+    margin: 0.5em 0;
+    color: #707070;
+}
+.company .heading-2 {
+    font-size: 1.1em;
+    margin: 0.3em 0;
+    color: #707070;
+}
+.company .heading-form-small label {
+    color: #a0a0a0;
+    margin: 0.1em 0;
+    font-weight: 400;
+}
+.company .line {
+    font-size: 1px;
+    line-height: 1px;
+    border-bottom: solid #c0c0c0 1px;
+    margin: 16px 0;
+}
+.company .description {
+}
+textarea#vinogradar_companiesbundle_company_description {
+    width: 100%;    
+    height: 10em;
+}
+.company .contact {
+
+}
+textarea#vinogradar_companiesbundle_company_contact {
+    height: 5em;
+}
+.company-body {
+    padding: 0 0 1em 0;
+}
+.company-footer {
+    border-top: solid #c0c0c0 1px;
+    padding: 1em 0;
+}
+.company .tags {
+}
+.company .tags a {
+}
+.company .views {
+    float: right;
+    font-size: 0.7em;
+}
+

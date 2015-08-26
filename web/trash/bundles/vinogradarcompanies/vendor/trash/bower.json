@@ -1,0 +1,26 @@
+{
+  "name": "vinogradar.kiev.ua",
+  "version": "0.0.0",
+  "authors": [
+    "Darth Vanger <darthvanger@gmail.com>"
+  ],
+  "description": "website listing companies of vinogradar neighborhood of Kiev city",
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "homepage": "vinogradar.kiev.ua",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "latest",
+    "bootstrap": "latest",
+    "lightbox": "latest"
+  }
+}

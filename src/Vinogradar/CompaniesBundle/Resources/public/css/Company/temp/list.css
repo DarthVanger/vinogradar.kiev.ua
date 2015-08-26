@@ -1,0 +1,6 @@
+@import url('../general.css');
+@import url('../layout/minimalistic.css');
+
+.tags a {
+    display: block;
+}
