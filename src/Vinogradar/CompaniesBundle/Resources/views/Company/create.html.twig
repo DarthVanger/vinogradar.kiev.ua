@@ -6,7 +6,7 @@
 {% block stylesheets %}
     {% stylesheets 
         'bundles/vinogradarcompanies/css/Company/show-and-create.css' filter='cssrewrite'
-        '@VinogradarCompaniesBundle/Resources/public/vendor/node_modules/select2/dist/css/select2.min.css'
+        'vendor/node_modules/select2/dist/css/select2.min.css'
     %}
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
@@ -88,8 +88,8 @@
 
 {% block javascripts %}
     {% javascripts
-        '@VinogradarCompaniesBundle/Resources/public/vendor/bower_components/lightbox/js/lightbox.min.js'
-        '@VinogradarCompaniesBundle/Resources/public/vendor/node_modules/select2/dist/js/select2.min.js'
+        'vendor/bower_components/lightbox/js/lightbox.min.js'
+        'vendor/node_modules/select2/dist/js/select2.min.js'
     %}
 
         <script type="text/javascript" src="{{ asset_url }}"></script>
