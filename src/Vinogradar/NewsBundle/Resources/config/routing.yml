@@ -1,0 +1,3 @@
+vinogradar_news_homepage:
+    path:     /news
+    defaults: { _controller: VinogradarNewsBundle:Default:listNews }
