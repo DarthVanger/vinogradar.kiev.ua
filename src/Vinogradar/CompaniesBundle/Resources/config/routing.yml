@@ -14,3 +14,8 @@ vinogradar_companies_list_by_tag:
     path:     /company/list/{tagNameForUrl}
     defaults: { _controller: VinogradarCompaniesBundle:Company:listByTag}
 
+# api
+vinogradar_companies_get_tags_list:
+    path:   /company/api/tags
+    defaults: { _controller: VinogradarCompaniesBundle:Company:getTagsJson }
+

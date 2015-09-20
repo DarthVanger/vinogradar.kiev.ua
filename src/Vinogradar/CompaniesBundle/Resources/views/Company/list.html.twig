@@ -13,7 +13,9 @@
 {% endblock %}
 
 {% block javascripts %}
-    {% javascripts 'public/vendor/bower_components/lightbox/js/lightbox.min.js' %}
+    {% javascripts
+        'vendor/bower_components/lightbox/js/lightbox.min.js'
+        'vendor/bower_components/jquery/dist/jquery.min.js' %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
 {% endblock %}
@@ -32,17 +34,40 @@
             <div>
                 Выберите категорию:
             </div>
+            <div id="tags">
             {% for tag in tags %}
                 <a href="{{ path('vinogradar_companies_list_by_tag', {'tagNameForUrl': tag.nameForUrl}) }}">
                     {{ tag.name }} ({{ tag.getCompaniesCount() }} companies)
                 </a>
             {% endfor %}
+            </div>
         </div>
     </div>
 
     <script>
-        var tags = JSON.parse("{{ tags|json_encode() }}");
-        console.log('tags:', tags);
+        var tags;
+
+
+        document.addEventListener("DOMContentLoaded", function(event) { 
+            console.log('doc is ready :)');
+            $.get('/company/api/tags')
+                .done(function(response) {
+                    console.log('get tags success!');
+                    console.log('response:', response);
+                    tags = response.tagsJSON;
+
+                    console.log('tags:', tags);
+                    for (var i=0; i<tags.length; i++) {
+                        console.log('appendin a tag');
+                        $('#tags').append('<a href="">' + tags[i].name + '</a>');
+                    }
+                })
+                .fail(function(response) {
+                    console.log('get tags fail!');
+                    console.log('response:', response);
+                });
+
+        });
     </script>
 {% endblock %}
 
