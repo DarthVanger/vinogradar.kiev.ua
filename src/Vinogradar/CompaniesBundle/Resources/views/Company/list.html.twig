@@ -24,15 +24,25 @@
         <div class="heading">
             Каталог компаний на Виноградаре
         </div>
+        <div class="tag-search">
+            <div>Поиск:</div>
+            <input type="text" />
+        </div>
         <div class="tags">
             <div>
                 Выберите категорию:
             </div>
             {% for tag in tags %}
                 <a href="{{ path('vinogradar_companies_list_by_tag', {'tagNameForUrl': tag.nameForUrl}) }}">
-                    {{ tag.name }}
+                    {{ tag.name }} ({{ tag.getCompaniesCount() }} companies)
                 </a>
             {% endfor %}
         </div>
     </div>
+
+    <script>
+        var tags = JSON.parse("{{ tags|json_encode() }}");
+        console.log('tags:', tags);
+    </script>
 {% endblock %}
+

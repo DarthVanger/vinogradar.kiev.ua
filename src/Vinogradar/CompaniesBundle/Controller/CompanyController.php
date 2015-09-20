@@ -70,6 +70,8 @@ class CompanyController extends Controller
 
         $tagProvider = $this->get('vinogradar_companies.tag_provider');
         $tags = $tagProvider->getAllTags();
+        //var_dump($tags);
+        //die();
         $viewData = array(
             'tags' => $tags
         );
